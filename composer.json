@@ -45,7 +45,8 @@
         "doctrine/migrations": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^2.0",
         "doctrine/dbal": "^2.7.1",
-        "symfony/orm-pack": "^2.0"
+        "symfony/orm-pack": "^2.0",
+        "symfony/dotenv": "^4.4"
     },
     "replace": {
         "paragonie/random_compat": "*",

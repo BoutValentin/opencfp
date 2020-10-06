@@ -16,25 +16,10 @@ services:
       target: php
       args:
         CFP_ENV: development
-    environment:
-      - CFP_DB_HOST=database
-      - CFP_DATABASE=opencfp
-      - CFP_DB_PASS=sqUwp64NHr299G2T
-      - CFP_DB_USER=opencfp
-      - MAIL_HOST=~
-      - MAIL_PORT=~
-      - MAIL_USERNAME=~
-      - MAIL_PASSWORD=~
-      - MAIL_ENCRYPTION=~
-      - MAIL_AUTH_MODE=~
-      - ADMIN_NAME=admin
-      - ADMIN_LAST_NAME=admin
-      - ADMIN_PASSWORD=changeMe
-      - ADMIN_EMAIL=changeMe@changeMe
-    healthcheck:
-      interval: 10s
-      timeout: 3s
-      retries: 3
+    healthcheck : 
+      interval : 10s
+      timeout : 3s
+      retries : 3
       start_period: 30s
     depends_on:
       - nodejs
@@ -42,7 +27,7 @@ services:
     volumes:
       - ./:/srv/app:rw
       - uploads-volumes:/srv/app/web/uploads:rw
-
+      
   nginx:
     build:
       context: .
@@ -52,7 +37,7 @@ services:
     depends_on:
       - php
     volumes:
-      - ./:/srv/app:ro #docker-composer.production.yml
+      - ./:/srv/app:ro 
       - uploads-volumes:/srv/app/web/uploads:ro
     ports:
       - target: 80

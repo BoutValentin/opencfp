@@ -29,12 +29,12 @@ FROM php:${PHP_VERSION}-fpm-alpine AS php
 
 # Adding the utilities tools to create the container
 RUN apk add --no-cache \
-	acl \
-	fcgi \
-	gettext \
-	git \
-	ttf-freefont \
-	;
+        acl \
+        fcgi \
+        gettext \
+        git \
+        ttf-freefont \
+   ;
 
 ARG ACPU_VERSION=5.1.17
 
@@ -96,6 +96,10 @@ WORKDIR /srv/app/
 
 ARG CFP_ENV=production
 ENV CFP_ENV=${CFP_ENV}
+
+# build for production
+ARG APP_ENV=${CFP_ENV}
+ENV APP_ENV=${APP_ENV}
 ENV TRUST_PROXIES true
 
 
@@ -105,9 +109,14 @@ RUN set -eux; \
 	composer install --prefer-dist --no-dev --no-scripts --no-progress --no-suggest; \
 	composer clear-cache
 
+# do not use .env files in production
+COPY .env ./
+RUN composer dump-env production; \
+	rm .env
+
 COPY bin bin/
-# RUN chmod +x bin/console
-COPY config config/
+COPY config/bootstrap.php config/bootstrap.php
+COPY docker/opencfp/config_constant.yml docker/opencfp/config_constant.yml
 COPY factories factories/
 COPY migrations migrations/
 COPY --from=nodejs /srv/app/resources resources/

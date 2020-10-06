@@ -5,17 +5,42 @@ use OpenCFP\Environment;
 use OpenCFP\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Debug\Debug;
+use Symfony\Component\ErrorHandler\Debug;
 
-\set_time_limit(0);
+if (!in_array(PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
+    echo 'Warning: The console should be invoked via the CLI version of PHP, not the '.PHP_SAPI.' SAPI'.PHP_EOL;
+}
 
-require __DIR__ . '/../vendor/autoload.php';
+set_time_limit(0);
+
+require dirname(__DIR__).'/vendor/autoload.php';
+
+if (!class_exists(Application::class)) {
+    throw new LogicException('You need to add "symfony/framework-bundle" as a Composer dependency.');
+}
 
 $input       = new ArgvInput();
 $environment = Environment::fromString($input->getParameterOption(['--env'], \getenv('CFP_ENV') ?: 'development'));
 
+if (null !== $env = $input->getParameterOption(['--env', '-e'], null, true)) {
+    putenv('CFP_ENV='.$_SERVER['CFP_ENV'] = $_ENV['CFP_ENV'] = $env);
+}
+
 if (!$environment->isProduction()) {
     Debug::enable();
+}
+if ($input->hasParameterOption('--no-debug', true)) {
+    putenv('APP_DEBUG='.$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = '0');
+}
+
+require dirname(__DIR__).'/config/bootstrap.php';
+
+if ($_SERVER['APP_DEBUG']) {
+    umask(0000);
+
+    if (class_exists(Debug::class)) {
+        Debug::enable();
+    }
 }
 
 $kernel      = new Kernel((string) $environment, !$environment->isProduction());

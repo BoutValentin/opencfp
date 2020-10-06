@@ -452,7 +452,24 @@ After the execution of this command you will see :
 
 ```sh
 OpenCFP
-=======
+```
+
+Now everything is set and ready to use. Go to localhost:8080 to see OpenCfp runnig. 
+
+To know how to use a docker-compose file in production, see [this documentation](https://docs.docker.com/compose/production/).
+Once the containers are up, you will have to add an administrator for the website.
+To do that you only have to execute 
+
+```sh
+
+$ docker-compose exec php bin/console user:create --first_name="CHANGE HERE" --last_name="CHANGE HERE" --email="CHANGE HERE" --password="CHANGE HERE" --admin
+
+```
+
+After the execution of this command you will see : 
+
+```sh
+OpenCFP
 
 Creating User
 -------------
@@ -466,6 +483,8 @@ Creating User
 ```
 
 Now everything is set and ready to use. Go to localhost:8080 to see OpenCfp runnig. 
+
+
 
 To know how to use a docker-compose file in production, see [this documentation](https://docs.docker.com/compose/production/).
 

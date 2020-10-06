@@ -1,4 +1,5 @@
 imports:
+  - { resource: services/*.php }
   - { resource: services/*.yml }
 
 framework:
@@ -13,10 +14,10 @@ framework:
 
 wouterj_eloquent:
   driver:   mysql
-  host:     '%database.host%'
-  database: '%database.database%'
-  username: '%database.user%'
-  password: '%database.password%'
+  host:     '%env(DATABASE_HOST)%'
+  database: '%env(DATABASE_DATABASE)%'
+  username: '%env(DATABASE_USER)%'
+  password: '%env(DATABASE_PASSWORD)%'
   charset:   utf8mb4
   collation: utf8mb4_unicode_ci
   prefix:    ~
@@ -38,9 +39,9 @@ monolog:
       level: '%log.level%'
 
 swiftmailer:
-  host:       '%mail.host%'
-  port:       '%mail.port%'
-  username:   '%mail.username%'
-  password:   '%mail.password%'
-  encryption: '%mail.encryption%'
-  auth_mode:  '%mail.auth_mode%'
+  host:       '%env(MAILER_HOST)%'
+  port:       '%env(MAILER_PORT)%'
+  username:   '%env(MAILER_USERNAME)%'
+  password:   '%env(MAILER_PASSWORD)%'
+  encryption: '%env(MAILER_ENCRYPTION)%'
+  auth_mode:  '%env(MAILER_AUTH_MODE)%'
