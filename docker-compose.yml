@@ -1,0 +1,76 @@
+version: "3.4"
+
+services:
+  nodejs:
+    build:
+      context: .
+      target: nodejs
+    command: ["yarn", "run", "watch-poll"]
+    volumes:
+      - ./:/srv/app:rw
+      - /srv/app/node_modules
+
+  php:
+    build:
+      context: .
+      target: php
+      args:
+        CFP_ENV: development
+    environment:
+      - CFP_DB_HOST=database
+      - CFP_DATABASE=opencfp
+      - CFP_DB_PASS=sqUwp64NHr299G2T
+      - CFP_DB_USER=opencfp
+      - MAIL_HOST=~
+      - MAIL_PORT=~
+      - MAIL_USERNAME=~
+      - MAIL_PASSWORD=~
+      - MAIL_ENCRYPTION=~
+      - MAIL_AUTH_MODE=~
+      - ADMIN_NAME=admin
+      - ADMIN_LAST_NAME=admin
+      - ADMIN_PASSWORD=changeMe
+      - ADMIN_EMAIL=changeMe@changeMe
+    healthcheck:
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - nodejs
+      - database
+    volumes:
+      - ./:/srv/app:rw
+      - uploads-volumes:/srv/app/web/uploads:rw
+
+  nginx:
+    build:
+      context: .
+      target: nginx
+      args:
+        CFP_ENV: development
+    depends_on:
+      - php
+    volumes:
+      - ./:/srv/app:ro #docker-composer.production.yml
+      - uploads-volumes:/srv/app/web/uploads:ro
+    ports:
+      - target: 80
+        published: 8080
+
+  database:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=opencfp
+      - MYSQL_USER=opencfp
+      - MYSQL_ROOT_PASSWORD=vq8237msWY6mAWD9
+      - MYSQL_PASSWORD=sqUwp64NHr299G2T
+    volumes:
+      - database:/var/lib/mysql:rw
+    ports:
+      - target: 3306
+        published: 3306
+
+volumes:
+  database: {}
+  uploads-volumes:
